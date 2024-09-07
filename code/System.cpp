@@ -43,8 +43,6 @@ System::System(double w, double h, int x, int y, double gx, double gy, double v)
 
 		frames = 0;
 
-		dtER = false;
-
 		lidSpeed = 0.0;
 
 		sU = false;
@@ -1260,15 +1258,6 @@ bool System::fullNeighbors(Matrix<int> &Is_any_c, int i, int j)
 }
 
 void System::step(){
-	if(!dtER){
-		stepCFL();
-	}
-	else {
-		stepRE();
-	}
-}
-
-void System::stepCFL(){
 	iters++;
 	// kolejna iteracja
 	iteration(dt, U1, V1, P1, D1, F1, Z1, C1);
@@ -1294,99 +1283,6 @@ void System::stepCFL(){
 	newDtCFL();
 }
 
-void System::stepRE(){
-	// primowane = glowne // Fp = F itd
-	iters++;
-
-	// kopie do iteracji raz całym dt
-	Matrix<double> U2 = U1;
-	Matrix<double> V2 = V1; 
-	Matrix<double> P2 = P1;
-	Matrix<double> D2 = D1;
-	Matrix<Cell> F2 = F1;
-	Matrix<double> Z2 = Z1;
-	std::vector<Particle> C2 = C1;
-
-	// zachowuje wartosci z poczatku iteracji zeby do nich wrocic jesli krok nie zaakceptowany
-	Matrix<double> U1tmp = U1; 
-	Matrix<double> V1tmp = V1;
-	Matrix<double> P1tmp = P1;
-	Matrix<double> D1tmp = D1;
-	Matrix<Cell> F1tmp = F1;
-	Matrix<double> Z1tmp = Z1;
-	std::vector<Particle> C1tmp = C1;
-
-	//2 razy 1/2 dt na wersjach głównych
-	iteration(dt*0.5, U1, V1, P1, D1, F1, Z1, C1);
-	iteration(dt*0.5, U1, V1, P1, D1, F1, Z1, C1);
-
-	// 1 raz dt na wersjach kopiowanych
-	iteration(dt, U2, V2, P2, D2, F2, Z2, C2); 
-
-	// liczenie nowego dt
-	bool accept = newDtRE(U2, V2);
-
-	if(accept){ // jesli krok zaakceptowany, to wstawiamy wynik po 2 krokach (bo jest dokladniejszy)
-		// nie trzeba kopiować, wszystko jest ok w wersjach z _1
-		timePassed += dt;
-		
-		if(timePassed >= gifTime) // przekroczony kolejny prog czasu do zapisu?
-		{
-			saveC(); 				// zapisz
-			if(sU)
-				saveU();
-			if(sV)
-				saveV();
-			if(sP)
-				saveP();
-			if(sD)
-				saveD(); 
-			gifTime += frameTime; 	// nowy próg 
-			frames+=1; 				// zwiększ ilość klatek
-		}
-	}
-	else{ // jesli krok nie zaakceptowany, to wracamy do poczatkowych
-		U1 = U1tmp;
-		V1 = V1tmp;
-		P1 = P1tmp;
-		D1 = D1tmp;
-		F1 = F1tmp;
-		Z1 = Z1tmp;
-		C1 = C1tmp;
-	}
-}
-
-bool System::newDtRE(Matrix<double> U2, Matrix<double> V2){
-	double S = 0.8; 	// parametr < 1
-	double T = 0.007; 	// tolerancja błędu - ma duzy wplyw na krok czasowy
-	double p = 1.0; 	// rzad dokladnosci metody
-
-	double dn = -1;
-	double du, dv;
-
-	// liczymy maksymalna różnicę miedzy predkosciami
-	for(int i=0; i< nx; i++)
-	{
-		for(int j=0; j<ny; j++)
-		{
-			
-			du = fabs(U1[i][j] - U2[i][j]); // 
-			dv = fabs(V1[i][j] - V2[i][j]);
-			if(du > dn)
-				dn = du;
-			if(dv > dn)
-				dn = dv;
-		}
-	}
-
-	// liczymy nowe dt  na bazie dn
-	dt = pow(S * (T/dn), 1.0/(p+1.0)) * dt;
-
-	// akceptujemy jedynie gdy dn jest mniejsze niz nasza zadana tolerancja bledu
-	return T > dn;
-
-
-}
 
 void System::newDtCFL(){
 	double u_max = 0.00;
@@ -1402,7 +1298,7 @@ void System::newDtCFL(){
 		}
 	}
 
-	double lam_cfl = 0.5; // 0.6
+	double lam_cfl = 0.5; 
 
 	double new_dt = dx*dx*dy*dy / (2*vis * (dx*dx + dy*dy));
 
@@ -1421,7 +1317,7 @@ void System::newDtCFL(){
 
 		// parametr stabilizacji
 		new_dt = 0.2 * new_dt; // 0.2
-		if (dt <= new_dt) // moze byc wiekszy krok
+		if (dt <= new_dt) 
 		{
 			// dt = (dt + new_dt)/2.0; 
 			dt =  new_dt;
@@ -1480,14 +1376,6 @@ bool System::COR(Matrix<Cell> F, int i, int j)
 		return false;
 }
 
-void System::setER(){
-	dtER = true;
-}
-
-void System::setCFL(){
-	dtER = false;
-}
-
 double System::getTimePassed(){
 	return timePassed;
 }
@@ -1499,4 +1387,3 @@ void System::saveUVPD(bool u, bool v, bool p, bool d)
 	sP = p;
 	sD = d;
 }
-
