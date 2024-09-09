@@ -90,9 +90,6 @@ class System{
 
 		// dokladnosc zera uzywana przy przesuwaniu czastek znaczonych
 		double zeroEps = 1e-08;
-	
-		// zmienna zmieniajaca metode liczenia dt na ekstrapolacje Richardsona
-		bool dtER;
 
 		// predkosc na wieczku (domyślnie 0.0)
 		double lidSpeed;
@@ -184,12 +181,6 @@ class System{
 		// glowna funkcja przechodzaca przez krok w programie - iteracja + nowe dt
 		void step();
 
-		// krok w programie liczacy nowe dt z kryterium CFL
-		void stepCFL();
-
-		// krok w programie liczacy nowe dt z ekstrapolacji Richardsona
-		void stepRE();
-
 		// liczenie nowego kroku czasowego bazujace na estrapolacji Richardsona
 		bool newDtRE(Matrix<double> U2, Matrix<double> V2);
 
@@ -205,16 +196,9 @@ class System{
 		// funkcja pomocnicza, zwraca czy komorka jest naroznikiem
 		bool COR(Matrix<Cell> F, int i, int j); 
 
-		// ustawienie liczenia dt na ekstrapolacje Richardsona
-		void setER();
-
-		// ustawienie liczenia dt na CFL (opcja domyslna)
-		void setCFL();
-
 		// zwraca miniony czas w symulacji
 		double getTimePassed();
 
 		void saveUVPD(bool u, bool v, bool p, bool d);
 
 };
-
