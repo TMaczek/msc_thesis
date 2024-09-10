@@ -10,7 +10,7 @@ Kod źródłowy w C++. Podzielony na klasy:
 - ``Matrix`` - klasa pomocnicza do reprezentacji macierzy.
 
 ## 📁 Plots
-Pliki generujące wykresy i animacje. 
+Pliki generujące wykresy i animacje. Wykorzystano Gnuplot oraz bilbiotekę Matplotlib języka Python.
 
 ## 📁 Animations
 Zawiera przypadki rozpatrywane i opisywane w pracy w formie gifów. Niektóre przykłady poniżej.
