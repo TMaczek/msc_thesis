@@ -1,25 +1,25 @@
-# Komputerowe Symulacje Cieczy Nieściśliwych
-Kod źródłowy oraz wygenerowane dzięki jego wynikom animacje dla wyników z pracy magisterskiej. Jej celem było stworzenie algorytmu na bazie metody MAC (*Marker-And-Cell*) opierającego się na równaniach Naviera-Stokesa do tworzenia symulacji w czasie cieczy nieściśliwych o różnych parametrach i konfiguracjach.
+# Computer simulations of incompressible fluids
+Source code of my masters thesis as well as animated results. The goal of the thesis was to implement a Marker-And-Cell method algorithm based on Navier-Stokes equations. As the result program creates time simulations of incompressible fluids with various starting parameters.
 
 ## 📁 Code
-Kod źródłowy w C++. Podzielony na klasy:
-- ``System`` - główny algorytm i jego ustawienia,
-- ``Type`` - typ wyliczeniowy, określa typy komórek na siatce obliczeniowej,
-- ``Cell`` - typ opakowujący ``Type``, komórka dla siatki określającej flagi,
-- ``Particle`` - klasa reprezentująca cząstkę znaczoną,
-- ``Matrix`` - klasa pomocnicza do reprezentacji macierzy.
+Source code created in C++. Dividen into classes:
+- ``System`` - main algorithm and settings,
+- ``Type`` - enum type, describes types of cell on computational mesh,
+- ``Cell`` - wrapper for ``Type``, cell in a mesh with flags,
+- ``Particle`` - marked cell representing class,
+- ``Matrix`` - additional class to represent matrices.
 
 ## 📁 Plots
-Pliki generujące wykresy i animacje. Wykorzystano Gnuplot oraz bilbiotekę Matplotlib języka Python.
+Files that generate plots and animations in Gnuplot and Python (Matplotlib).
 
 ## 📁 Animations
-Zawiera przypadki rozpatrywane i opisywane w pracy w formie gifów. Niektóre przykłady poniżej.
+Results for the configurations described in thesis in gif form. Some below as examples.
 
-### Problem *lid-driven cavity* 
+### *Lid-driven cavity* problem
 ![Lid-driven cavity problem animation](https://github.com/TMaczek/msc_thesis/blob/main/animations/6_2_anim.gif)
 
-### Fala załamująca się na płytkiej wodzie
+### Shallow wave breaking
 ![shallow wave breaking](https://github.com/TMaczek/msc_thesis/blob/main/animations/7_2_anim.gif)
 
-### Opuszczona tama (*broken dam problem*) z przeszkodą 
+### *Broken dam problem* with obstacle 
 ![broken dam with obstacle](https://github.com/TMaczek/msc_thesis/blob/main/animations/7_4_anim.gif)
